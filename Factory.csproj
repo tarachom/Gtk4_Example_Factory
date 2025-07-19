@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GirCore.Gtk-4.0" Version="0.7.0-preview.1" />
+    <PackageReference Include="GirCore.GObject-2.0.Integration" Version="0.7.0-preview.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Default.css" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
