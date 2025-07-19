@@ -24,10 +24,8 @@ partial class FactoryWindow : Window
     public FactoryWindow(Application? app) : base()
     {
         Application = app;
-        Title = "Фабрика";
-
+        Title = "Перегляд стовпців та фабрика";
         SetDefaultSize(900, 900);
-        Maximized = true;
 
         Box vBox = Box.New(Vertical, 0);
         vBox.MarginTop = vBox.MarginBottom = vBox.MarginStart = vBox.MarginEnd = 10;
@@ -35,23 +33,24 @@ partial class FactoryWindow : Window
 
         var store = Gio.ListStore.New(Record.GetGType());
 
-        for (int i = 1; i < 1000; i++)
+        for (int i = 1; i < 100_000; i++)
             store.Append(new Record($"Назва {i}", $"Текст {i} текст {i} \nТекст {i} текст {i}", i, Guid.NewGuid()));
 
         SingleSelection model = SingleSelection.New(store);
-        //model.Autoselect = true;
+        model.Autoselect = true;
 
         ColumnView columnView = ColumnView.New(model);
-        
+
+        //1
         {
-            SignalListItemFactory name = SignalListItemFactory.New();
-            name.OnSetup += (factory, e) =>
+            SignalListItemFactory factory = SignalListItemFactory.New();
+            factory.OnSetup += (factory, e) =>
             {
                 ListItem listitem = (ListItem)e.Object;
                 listitem.SetChild(new LabelControl());
             };
 
-            name.OnBind += (factory, e) =>
+            factory.OnBind += (factory, e) =>
             {
                 ListItem listitem = (ListItem)e.Object;
 
@@ -59,21 +58,22 @@ partial class FactoryWindow : Window
                 label?.SetText(((Record?)listitem.Item)?.Назва);
             };
 
-            ColumnViewColumn column = ColumnViewColumn.New("Назва", name);
+            ColumnViewColumn column = ColumnViewColumn.New("Назва", factory);
             column.Resizable = true;
 
             columnView.AppendColumn(column);
         }
 
+        //2
         {
-            SignalListItemFactory name = SignalListItemFactory.New();
-            name.OnSetup += (factory, e) =>
+            SignalListItemFactory factory = SignalListItemFactory.New();
+            factory.OnSetup += (factory, e) =>
             {
                 ListItem listitem = (ListItem)e.Object;
                 listitem.SetChild(new LabelControl2());
             };
 
-            name.OnBind += (factory, e) =>
+            factory.OnBind += (factory, e) =>
             {
                 ListItem listitem = (ListItem)e.Object;
                 Record? record = (Record?)listitem.Item;
@@ -82,34 +82,33 @@ partial class FactoryWindow : Window
                 label?.SetText(record?.Назва, record?.Кількість.ToString());
             };
 
-            ColumnViewColumn column = ColumnViewColumn.New("Назва\nКількість", name);
+            ColumnViewColumn column = ColumnViewColumn.New("Назва\nКількість", factory);
             column.Resizable = true;
 
             columnView.AppendColumn(column);
         }
 
+        //3
         {
-            SignalListItemFactory name = SignalListItemFactory.New();
-            name.OnSetup += (factory, e) =>
+            SignalListItemFactory factory = SignalListItemFactory.New();
+            factory.OnSetup += (factory, e) =>
             {
                 ListItem listitem = (ListItem)e.Object;
                 listitem.SetChild(new LabelControl3());
             };
 
-            name.OnBind += (factory, e) =>
+            factory.OnBind += (factory, e) =>
             {
                 ListItem listitem = (ListItem)e.Object;
                 Record? record = (Record?)listitem.Item;
 
                 LabelControl3? label = (LabelControl3?)listitem.GetChild();
                 label?.SetText(record?.Назва, record?.Опис, record?.Кількість.ToString(), record?.Uid.ToString());
-
-                //Console.WriteLine(record?.Кількість);
             };
 
-            ColumnViewColumn column = ColumnViewColumn.New("Назва\nОпис\nКількість / Id", name);
+            ColumnViewColumn column = ColumnViewColumn.New("Назва\nОпис\nКількість / Id", factory);
             column.Resizable = true;
-            
+
             columnView.AppendColumn(column);
         }
 
